@@ -131,9 +131,13 @@ class Directional_Graph:
         return self.outbound_nodes[node]
 
     def get_in_degree(self, node):
+        if self.inbound_nodes[node] == [-2]:
+            return 0
         return len(self.inbound_nodes[node])
 
     def get_out_degree(self, node):
+        if self.outbound_nodes[node] == [-2]:
+            return 0
         return len(self.outbound_nodes[node])
     
     def get_inbound_edges_with_costs(self, node):
@@ -216,6 +220,8 @@ class UI:
         print("2. Remove a node")
         print("3. Add an edge")
         print("4. Remove an edge")
+        print("5. Get the cost of an edge")
+        print("6. Change the cost of an edge")
         print("0. Back")
 
     def get_modify_option(self):
@@ -242,7 +248,35 @@ class UI:
                 end = int(input("Enter the end node: "))
                 self.graph.remove_edge(start, end)
             except ValueError as e:
-                print(e)
+                print("Invalid edge!")
+        elif choice == "5":
+            try:
+                start = int(input("Enter the start node: "))
+                end = int(input("Enter the end node: "))
+                if not self.graph.is_edge(start, end):
+                    print("The edge does not exist!")
+                    input("Press enter to continue...")
+                    raise ValueError
+                print(f"The cost of the edge is: {self.graph.get_cost(start, end)}")
+                input("Press enter to continue...")
+            except ValueError as e:
+                print("Invalid edge!")
+        elif choice == "6":
+            try:
+                start = int(input("Enter the start node: "))
+                end = int(input("Enter the end node: "))
+                cost = int(input("Enter the new cost: "))
+                if cost < 0:
+                    print("The cost cannot be negative!")
+                    input("Press enter to continue...")
+                    raise ValueError("The cost cannot be negative!")
+                if not self.graph.is_edge(start, end):
+                    print("The edge does not exist!")
+                    input("Press enter to continue...")
+                    raise ValueError("The edge does not exist!")
+                self.graph.set_cost(start, end, cost)      
+            except ValueError as e:
+                print("Invalid edge!")
         elif choice == "0":
             pass
         else:
